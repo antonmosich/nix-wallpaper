@@ -17,6 +17,7 @@
 let
   isNixFile = file: type: (lib.hasSuffix ".nix" file && type == "regular");
   isColor = str: builtins.isString str && (builtins.isList (builtins.match "^#[0-9a-fA-F]{6}$" str));
+  isBackgroundColor = str: isColor str || str == "transparent";
 in
 
 assert builtins.isInt width && width > 0;
@@ -27,8 +28,8 @@ assert lib.assertMsg
   (lib.hasAttr "${preset}.nix"
     (lib.filterAttrs isNixFile (builtins.readDir ../data/presets)))
   "unknown preset \"${preset}\"";
-assert lib.assertMsg (backgroundColor == null || isColor backgroundColor)
-  "backgroundColor should be a 6-digit hex code";
+assert lib.assertMsg (backgroundColor == null || isBackgroundColor backgroundColor)
+  "backgroundColor should be a 6-digit hex code or transparent";
 assert lib.assertMsg (builtins.all isColor (lib.attrValues logoColors))
   "logoColors should contain 6-digit hex codes";
 assert lib.assertMsg

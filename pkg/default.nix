@@ -48,18 +48,20 @@ let
   finalColors = import ../data/presets/${preset}.nix
     // logoColors //
     lib.optionalAttrs (backgroundColor != null) { inherit backgroundColor; };
-    colorscheme = lib.concatMapAttrs (
+  colorscheme = lib.concatMapAttrs
+    (
       name: value: {
         ${name} = color value;
         ${opacityName name} = opacity name value;
       }
-      ) finalColors;
+    )
+    finalColors;
 in
 runCommandLocal "nix-wallpaper"
 rec {
   inherit width height;
   inherit (colorscheme) color0 color1 color2 color3 color4 color5 backgroundColor
-                           opacity0 opacity1 opacity2 opacity3 opacity4 opacity5 backgroundOpacity;
+    opacity0 opacity1 opacity2 opacity3 opacity4 opacity5 backgroundOpacity;
   buildInputs = [ imagemagick ];
   density = 1200;
   # 72 is the default density
